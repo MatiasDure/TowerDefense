@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d6467ae414d554dadcd28893336aa9, type: 3}
+  m_Name: SingleTower
+  m_EditorClassIdentifier: 
+  _towerPrefab: {fileID: 8414867006264173834, guid: a24fb6e18b6e22e48856f4522f9fe19f,
+    type: 3}
+  _name: Single
+  _cooldownShootTimer: 1
+  _amountInflict: 0.3
+  _range: 3
+  _upgradedTower: {fileID: 8414867006264173834, guid: 81a43e4f86b291b4b968f3f34b92cb78,
+    type: 3}
