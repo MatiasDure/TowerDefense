@@ -3,6 +3,7 @@ using UnityEngine;
 public class Waypoints : MonoBehaviour
 {
     [SerializeField] private Transform[] _points;
+    [SerializeField] GameObject road;
 
     public Transform[] Points { get => _points; }
     public static Waypoints Instance { get; private set; }

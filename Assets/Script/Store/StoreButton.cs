@@ -3,6 +3,9 @@ using System;
 
 public class StoreButton : MonoBehaviour
 {
+    private readonly Color CAN_BUY = new Color(255, 255, 255, 1);
+    private readonly Color CANNOT_BUY = new Color(255, 255, 255, .3f);
+
     [SerializeField] ButtonElements _button;
     public bool CanClick { get; private set; }
     public ButtonElements Button => _button;
@@ -23,15 +26,15 @@ public class StoreButton : MonoBehaviour
     {
         if(Wallet.Instance.Money < _button.Cost)
         {
-            _button.Img.color  = Color.red;
+            _button.Img.color = CANNOT_BUY;//Color.red;
             CanClick = false;
             return;
         }
-        _button.Img.color = Color.green;
+        _button.Img.color = CAN_BUY;//Color.green;
         CanClick = true;
     }
 
-    private void SetButtonPrice(int price) => _button.TextObj.text = "" + price;
+    private void SetButtonPrice(int price) => _button.TextObj.text = "$" + price;
 }
 
 

@@ -54,7 +54,7 @@ public class TowerPlacer : MonoBehaviour
     {
         if (TowerSpot != null)
         {
-            gameObject.transform.position = TowerSpot.gameObject.transform.position;
+            this.transform.position = TowerSpot.gameObject.transform.position;
             TowerSpot.TowerPlaced();
         }
         else if (manager.CurrentTowerStatus == TowerManager.TowerStatus.Holding) Destroy(gameObject);

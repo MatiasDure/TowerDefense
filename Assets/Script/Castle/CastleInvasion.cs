@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Castle))]
 public class CastleInvasion : MonoBehaviour
@@ -18,7 +17,7 @@ public class CastleInvasion : MonoBehaviour
         {
             Enemy currentEnemy = EnemyManager.Instance.FindEnemyInScene(other.gameObject);
 
-            if (!currentEnemy) other.TryGetComponent(out currentEnemy);
+            if (!currentEnemy) throw new Exception("Enemy was not found in Enemy Manager!");
             
             castle.TakeDamage(currentEnemy.Stats.Damage);
             currentEnemy.DisableEnemy();
