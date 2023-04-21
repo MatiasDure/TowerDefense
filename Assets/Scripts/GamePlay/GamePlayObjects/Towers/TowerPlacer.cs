@@ -46,11 +46,10 @@ public class TowerPlacer : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when a collider enters the trigger zone.
     /// If the tower is currently being held and the collider's tag matches the target tag,
     /// the tower spot is set to the unoccupied tower spot that entered the trigger zone.
     /// </summary>
-    /// <param name="other">The collider that entered the trigger zone.</param>
+    /// <param name="other"> The collider that entered the trigger zone. </param>
     private void OnTriggerEnter(Collider other)
     {
         if (_manager == null) return;
@@ -66,15 +65,12 @@ public class TowerPlacer : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (_manager == null || 
-            other == null) return;
+            other == null ||
+            TowerSpot == null) return;
 
-        try
-        {
-            if (_manager.CurrentTowerStatus == TowerManager.TowerStatus.Holding &&
+        if (_manager.CurrentTowerStatus == TowerManager.TowerStatus.Holding &&
                 other.CompareTag(TAG_TO_COMPARE) &&
                 TowerSpot.gameObject == other.gameObject) TowerSpot = null;
-        }
-        catch (Exception e) { Debug.LogWarning(e.Message); }
     }
 
     /// <summary>
@@ -91,6 +87,7 @@ public class TowerPlacer : MonoBehaviour
             success = true;
         }
         else if (_manager.CurrentTowerStatus == TowerManager.TowerStatus.Holding) Destroy(gameObject);
+
         OnTowerDroppedStatusChange?.Invoke(success);
         OnTowerDroppedUiChange?.Invoke();
     }

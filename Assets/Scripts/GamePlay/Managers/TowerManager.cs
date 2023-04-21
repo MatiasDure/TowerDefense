@@ -96,7 +96,7 @@ public class TowerManager : MonoBehaviour
         TowerSelector = GetComponent<TowerSelector>();
         Placer = GetComponent<TowerPlacer>();
 
-        if (!_targetManager) _targetManager = GetComponentInChildren<EstablishTarget>();
+        if (_targetManager == null) _targetManager = GetComponentInChildren<EstablishTarget>();
     }
 
     /// <summary>
