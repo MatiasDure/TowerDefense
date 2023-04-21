@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4803cf41f52c0d84bba4b2c92769cf7b, type: 3}
   m_Name: Goblin
   m_EditorClassIdentifier: 
-  _id: Goblin
-  _speed: 0
+  _type: Goblin
   _damage: 1

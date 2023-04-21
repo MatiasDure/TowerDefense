@@ -1,13 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
 
+/// <summary>
+/// Interface for objects that can drop money.
+/// </summary>
 public interface IDropMoney
 {
-    public float Money { get; }
-    public MoneyDroppedInfo MoneyInfo { get; }
-    public event Action<MoneyDroppedInfo> OnDropMoney;
+    /// <summary>
+    /// Gets information about the money that will be dropped.
+    /// </summary>
+    MoneyDroppedInfo MoneyInfo { get; }
 
-    public void DropMoney();
+    /// <summary>
+    /// Event that is triggered when money is dropped.
+    /// </summary>
+    event Action<MoneyDroppedInfo> OnDropMoney;
 }

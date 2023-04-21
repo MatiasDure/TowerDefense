@@ -1,42 +1,75 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+///<summary>
+/// Class representing the health of an enemy.
+///</summary>
 public class EnemyHealth : MonoBehaviour, IHaveHealth
 {
-    [SerializeField] float _health;
+    [SerializeField] float _startingHealth;
+    
+    private bool _dead;
 
-    private bool dead;
-    public float StartingHealth => _health;
+    /// <summary>
+    /// Read-only property representing the starting health of the enemy.
+    /// </summary>
+    public float StartingHealth => _startingHealth;
 
+    /// <summary>
+    /// Property representing the current health of the enemy.
+    /// </summary>
     public float Health { get; private set; }
 
+    /// <summary>
+    /// Event that is triggered when an IHaveHealth object's health has been modified
+    /// </summary>
     public event Action<float> OnHealthChanged;
+
+    /// <summary>
+    /// Event that is triggered when an IHaveHealth object has been destroyed
+    /// </summary>
     public event Action OnHealthObjectDestroyed;
+
+    /// <summary>
+    /// Event that is triggered when this enemy instance's hp has reached 0
+    /// </summary>
     public event Action OnHealthZero;
 
-    public void TakeDamage(float damage)
+    private void OnDestroy() => OnHealthObjectDestroyed?.Invoke();
+    
+    /// <summary>
+    /// Checks whether the enemy has lost all its hp
+    /// </summary>
+    private void CheckIfDead()
     {
-        if (dead) return;
-
-        Health -= damage;
-        OnHealthChanged?.Invoke(Health);
-
-        if (Health <= 0)
+        if (Health <= 0) 
         {
-            OnHealthZero?.Invoke();
-            dead = true;
+            OnHealthZero?.Invoke(); 
+            _dead = true; 
         }
     }
 
-    public void ResetHealth()
+    ///<summary>
+    /// Method to update the enemy's health.
+    ///</summary>
+    ///<param name="damage">The amount of damage taken.</param>
+    public void TakeDamage(float damage)
     {
-        OnHealthChanged?.Invoke(StartingHealth);
-        Health = StartingHealth;
-        dead = false;
+        if (_dead) return; 
+
+        Health -= damage; 
+        OnHealthChanged?.Invoke(Health); 
+
+        CheckIfDead();
     }
 
-    private void OnDestroy() => OnHealthObjectDestroyed?.Invoke();
-
+    ///<summary>
+    /// Method to reset the health of the enemy.
+    ///</summary>
+    public void ResetHealth()
+    {
+        OnHealthChanged?.Invoke(StartingHealth); 
+        Health = StartingHealth; 
+        _dead = false; 
+    }
 }

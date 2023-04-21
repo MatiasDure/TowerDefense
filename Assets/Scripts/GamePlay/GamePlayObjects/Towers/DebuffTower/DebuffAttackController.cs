@@ -1,19 +1,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebuffAttackController : CanonController
+/// <summary>
+/// Debuff tower type
+/// </summary>
+public class DebuffAttackController : CannonController
 {
+    /// <summary>
+    /// Slows down a single enemy in range
+    /// </summary>
+    /// <remarks>
+    /// <para> Method inherited from CanonController </para>
+    /// <para> Only affects enemies which haven't been affected by this debuff instance previously </para>
+    /// </remarks>
     protected override void Shoot()
     {
-        //note: the same debuff cannot affect the same enemy twice, but another debuff instance could affect
-        //that same enemy
-        foreach (KeyValuePair<GameObject, Enemy> pair in Targets)
+        foreach (var target in Targets)
         {
-            if (pair.Value.ComparePreviousDebuffers(this)) continue;
-            pair.Value.UpdateSpeed(this, pair.Value.Follower.Speed * inflictAmount);
-            targetToLookAt = pair.Value.transform;
-            audioSource.Play();
-            return;
+            if (target.Value.ComparePreviousDebuffers(this)) continue;
+
+            Enemy enemy = target.Value;
+            TargetToLookAt = enemy.transform;
+
+            if (!LockedOnTarget(enemy.gameObject)) return;
+            
+            enemy.UpdateSpeed(this, enemy.Follower.Speed * InflictAmount);
+            CreateBullet(enemy.transform);
+
+            break;
         }
     }
 }

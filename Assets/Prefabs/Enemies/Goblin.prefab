@@ -135,7 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyStats: {fileID: 11400000, guid: f130d8eae45a3ae4489e974415852350, type: 2}
   _enemyWallet: {fileID: 590538293320416620}
-  enemyHealth: {fileID: 5186332080277592862}
+  _enemyHealth: {fileID: 5186332080277592862}
 --- !u!114 &-2828940823498513205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14bca6a310319d34e9ebe4bb595a93b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 2329827693691094229}
+  _healthBar: {fileID: 2329827693691094229}
 --- !u!114 &590538293320416620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f2456e63e54be44a6c4588fd2b5818, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _money: 2
+  _money: 3
 --- !u!114 &5186332080277592862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fca8e0a3a79c79499e849b64ea4f093, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 1
+  _startingHealth: 2
 --- !u!114 &2148484582253900696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b3820cdfc09cf6488b6de70324fe0bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startingSpeed: 5
+  _startingSpeed: 4
 --- !u!1001 &331159676592807884
 PrefabInstance:
   m_ObjectHideFlags: 0

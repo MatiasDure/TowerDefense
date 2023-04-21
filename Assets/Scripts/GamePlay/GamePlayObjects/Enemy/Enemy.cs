@@ -1,67 +1,120 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Describes an in-game enemy game object and its components
+/// </summary>
 [RequireComponent(typeof(WaypointFollower), typeof(EnemyWallet), typeof(EnemyHealth))]
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] SO_Enemy _enemyStats;
-    [SerializeField] EnemyWallet _enemyWallet;
-    [SerializeField] EnemyHealth enemyHealth;
+    [SerializeField] private SO_Enemy _enemyStats;
+    [SerializeField] private EnemyWallet _enemyWallet;
+    [SerializeField] private EnemyHealth _enemyHealth;
 
-    public static event Action OnDeath;
-    public event Action<GameObject> OnDisabled;
+    private List<DebuffAttackController> _debuffedBy = new();
 
+    /// <summary>
+    /// Gets this enemy instance's wallet
+    /// </summary>
     public EnemyWallet EnemyWallet => _enemyWallet;
-    public List<DebuffAttackController> DebuffedBy { get; private set; }
+
+    /// <summary>
+    /// Gets this enemy instance's Waypoint follower component 
+    /// </summary>
     public WaypointFollower Follower { get; private set; }
+
+    /// <summary>
+    /// Gets this enemy instance's information
+    /// </summary>
+    /// <remarks> Component is a scriptable object </remarks>
     public SO_Enemy Stats => _enemyStats;
 
-    void Awake()
+    /// <summary>
+    /// Event that is triggered when an enemy instance's health is <= 0 or if they have collided with the castle
+    /// </summary>
+    public static event Action OnAnEnemyDeath;
+
+    /// <summary>
+    /// Event that is triggered when an enemy instance has died
+    /// </summary>
+    public event Action OnEnemyDead;
+
+    /// <summary>
+    /// Event that is triggered when this instance is disabled
+    /// </summary>
+    public event Action<GameObject> OnNotTargetable;
+
+    void Awake() => GetComponents();
+
+    private void Start() => _enemyHealth.OnHealthZero += EnemyDied;
+
+    private void OnEnable() => ResetEnemyStats();
+    
+    private void OnDisable() => OnNotTargetable?.Invoke(this.gameObject);
+
+    private void GetComponents()
     {
-        enemyHealth = GetComponent<EnemyHealth>();
+        _enemyHealth = GetComponent<EnemyHealth>();
         Follower = GetComponent<WaypointFollower>();
-        DebuffedBy = new();
     }
 
-    private void Start() => enemyHealth.OnHealthZero += EnemyDied;
-
+    /// <summary>
+    /// Reacts accordingly after the enemy instance has been killed
+    /// </summary>
     private void EnemyDied()
     {
-        _enemyWallet.DropMoney();
+        OnEnemyDead?.Invoke();
         DisableEnemy();
     }
 
+    /// <summary>
+    /// Resets enemy values as to what they were intially set as
+    /// </summary>
+    /// <remarks>Needed because of the use of object pooling</remarks>
     private void ResetEnemyStats()
     {
-        enemyHealth.ResetHealth();
-        DebuffedBy.Clear();
-    }
-    public void TakeDamage(float damage) => enemyHealth.TakeDamage(damage);
-    public void UpdateSpeed(DebuffAttackController obj, float value)
-    {
-        Follower.SetSpeed(value);
-        DebuffedBy.Add(obj);
+        _enemyHealth.ResetHealth();
+        _debuffedBy.Clear();
     }
 
-    public bool ComparePreviousDebuffers(DebuffAttackController objToCompare)
+    /// <summary>
+    /// Decreases the health points of the enemy health component
+    /// </summary>
+    /// <param name="damage">Amount of damage to inflict on the enemy health component</param>
+    public void TakeDamage(float damage) => _enemyHealth.TakeDamage(damage);
+
+    /// <summary>
+    /// Modifies the speed on which the waypoint component is moving the enemy
+    /// </summary>
+    /// <param name="debuff">The debuff instance that triggered this effect to save it for later query</param>
+    /// <param name="speedValue">The amount to set the speed to</param>
+    public void UpdateSpeed(DebuffAttackController debuff, float speedValue)
     {
-        foreach(DebuffAttackController debuffer in DebuffedBy)
+        Follower.Speed = speedValue;
+        _debuffedBy.Add(debuff);
+    }
+
+    /// <summary>
+    /// Checks whether a certain debuff instance has already debuffed this enemy
+    /// </summary>
+    /// <param name="debuffToCompare">The debuff instance we want to compare againts all the debuff instances that afected this enemy previously</param>
+    /// <returns>True if the debuff instance passed as argument has debuffed this enemy, false otherwise</returns>
+    public bool ComparePreviousDebuffers(DebuffAttackController debuffToCompare)
+    {
+        foreach(DebuffAttackController debuffer in _debuffedBy)
         {
-            if (debuffer.Equals(objToCompare)) return true;
+            if (debuffer.Equals(debuffToCompare)) return true;
         }
         return false;
     }
 
+    /// <summary>
+    /// Disables this enemy instance
+    /// </summary>
     public void DisableEnemy()
     {
-        OnDeath?.Invoke();
+        OnAnEnemyDeath?.Invoke();
         this.gameObject.SetActive(false);
     }
-    
-    private void OnEnable() => ResetEnemyStats();
-    
-    private void OnDisable() => OnDisabled?.Invoke(this.gameObject);
-
 }

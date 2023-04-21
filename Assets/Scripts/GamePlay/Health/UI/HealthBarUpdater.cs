@@ -1,36 +1,50 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+///<summary>
+/// This class updates the UI health bar image based on changes to the health of the object
+/// that has the IHaveHealth component attached to it.
+///</summary>
 [RequireComponent(typeof(IHaveHealth))]
 public class HealthBarUpdater : MonoBehaviour
 {
-    [SerializeField] private Image healthBar;
-    [SerializeField] private IHaveHealth healthProvider;
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private IHaveHealth _healthProvider;
 
     private float maxValue;
 
-    private void Awake()
+    private void Awake() => GetComponents();
+
+    private void GetComponents()
     {
-        if (!healthBar) Debug.LogWarning("Pass the health bar image to the HealthBarUpdater!");
-        healthProvider = GetComponent<IHaveHealth>();
+        _healthProvider = GetComponent<IHaveHealth>();
     }
 
     private void Start()
     {
-        maxValue = healthProvider.StartingHealth;
-        healthProvider.OnHealthChanged += UpdateHealthBar;
-        healthProvider.OnHealthObjectDestroyed += Unsubscribe;
+        maxValue = _healthProvider.StartingHealth;
+        _healthProvider.OnHealthChanged += UpdateHealthBar;
+        _healthProvider.OnHealthObjectDestroyed += Unsubscribe;
     }
 
+    /// <summary>
+    /// Called by health events, this method updates the fill amount of the health bar image
+    /// based on the current health of the object.
+    /// </summary>
+    /// <param name="changedValue"> The current health value of the object. </param>
     private void UpdateHealthBar(float changedValue)
     {
-        if (!healthBar) return;
-        healthBar.fillAmount = changedValue / maxValue;
+        if (!_healthBar) return;
+        _healthBar.fillAmount = changedValue / maxValue;
     }
 
+    /// <summary>
+    /// Called when the object is destroyed, this method unsubscribes from the health events
+    /// to prevent errors from being thrown after the object no longer exists.
+    /// </summary>
     private void Unsubscribe()
     {
-        healthProvider.OnHealthChanged -= UpdateHealthBar;
-        healthProvider.OnHealthObjectDestroyed -= Unsubscribe;
+        _healthProvider.OnHealthChanged -= UpdateHealthBar;
+        _healthProvider.OnHealthObjectDestroyed -= Unsubscribe;
     }
 }

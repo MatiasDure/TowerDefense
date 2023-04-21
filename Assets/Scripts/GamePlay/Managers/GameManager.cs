@@ -1,55 +1,76 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+/// <summary>
+/// This class is responsible for managing the game state and ending the game in either a win or loss condition.
+/// </summary>
+public class GameManager : Singleton<GameManager>
 {
     private const string GAME_OVER = "Game Over\n";
+    private const string WIN_TEXT = "You Win";
+    private const string LOSE_TEXT = "You Lose";
 
-    [SerializeField] Image gameOverScreen;
-    [SerializeField] TextMeshProUGUI gameOverText;
+    [SerializeField] private Image _gameOverScreen;
+    [SerializeField] private TextMeshProUGUI _gameOverText;
 
-    public static GameManager Instance { get; private set; }
-
+    /// <summary>
+    /// Indicates whether the game is currently paused
+    /// </summary>
     public bool IsGamePaused { get; private set; }
+
+    /// <summary>
+    /// Indicates whether the game has been lost
+    /// </summary>
     public bool IsGameLost { get; private set; }
+
+    /// <summary>
+    /// Indicates whether the game has been won
+    /// </summary>
     public bool IsGameWon { get; private set; }
 
-    private void Awake()
-    {
-        //Application.targetFrameRate = 20;
-        if (Instance == null) Instance = this;
-        else Destroy(this.gameObject);
-    }
-    // Start is called before the first frame update
+    protected override void Awake() => base.Awake();
+
     private void Start()
     {
         Castle.OnCastleDeath += GameLost;
         WaveManager.OnNoMoreWaves += GameWon;
     }
 
+    /// <summary>
+    /// Sets the losing screen
+    /// </summary>
     private void GameLost()
     {
         IsGameLost = true;
         PauseGame();
-        GameOver("You Lose");
+        GameOver(LOSE_TEXT);
     }
 
+    /// <summary>
+    /// Sets the winning screen
+    /// </summary>
     private void GameWon()
     {
         IsGameWon = true;
         PauseGame();
-        GameOver("You Win");
+        GameOver(WIN_TEXT);
     }
 
+    /// <summary>
+    /// Displays the game over screen with a specified message.
+    /// </summary>
+    /// <param name="wonLost"> A string which states whether the game was won or lost </param>
     private void GameOver(string wonLost)
     {
-        gameOverText.text = GAME_OVER + wonLost;
-        gameOverScreen.gameObject.SetActive(true);
+        _gameOverText.text = GAME_OVER + wonLost;
+        _gameOverScreen.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Pauses the game
+    /// </summary>
+    /// <remarks> Sets <c>Time.timeScale = 0</c> </remarks>
     private void PauseGame()
     {
         IsGamePaused = true;

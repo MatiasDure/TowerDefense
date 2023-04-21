@@ -1,16 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SingleAttackController : CanonController
+/// <summary>
+/// Debuff tower type
+/// </summary>
+public class SingleAttackController : CannonController
 {
+    /// <summary>
+    /// Inflicts damage on enemies within range once at a time
+    /// </summary>
+    /// <remarks>
+    /// <para> Method inherited from CanonController </para>
+    /// <para> 
+    /// Locks on the first enemy that entered this tower's range, 
+    /// and doesn't unlock until that enemy is no longer in range or 
+    /// has been eliminated
+    /// </para>
+    /// </remarks>
     protected override void Shoot()
     {
         GameObject target = Targets.Keys.FirstOrDefault();
+        TargetToLookAt = target.transform;
 
-        Targets[target].TakeDamage(inflictAmount);
-        targetToLookAt = target.transform;
-        audioSource.Play();
+        if (!LockedOnTarget(target)) return;
+
+        Targets[target].TakeDamage(InflictAmount);
+        CreateBullet(target.transform);
     }
 }

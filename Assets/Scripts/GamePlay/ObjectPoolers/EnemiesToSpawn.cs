@@ -1,5 +1,7 @@
-using System.Collections;
 
+/// <summary>
+/// This structs facilitates passing the enemies to spawn for each wave
+/// </summary>
 [System.Serializable]
 public struct EnemiesToSpawn
 {

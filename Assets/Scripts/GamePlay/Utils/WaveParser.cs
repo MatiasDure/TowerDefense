@@ -1,40 +1,64 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WaveParser : MonoBehaviour
 {
-    [SerializeField] SO_Wave[] waves;
+    [SerializeField] private SO_Wave[] _waves;
 
-    //wave
-    public int AmountWaves => waves.Length;
+    /// <summary>
+    /// The number of waves defined in the game.
+    /// </summary>
+    public int AmountWaves => _waves.Length;
+
+    /// <summary>
+    /// The current wave number.
+    /// </summary>
     public uint WaveNumber { get; private set; }
+
+    /// <summary>
+    /// The delay before the next wave starts.
+    /// </summary>
     public float DelayBeforeNextWave { get; private set; }
+
+    /// <summary>
+    /// The delay between the spawn of enemies in the same wave.
+    /// </summary>
     public float DelayBetweenSpawn { get; private set; }
 
-    //enemies
+    /// <summary>
+    /// The total amount of enemies that will spawn in the current wave.
+    /// </summary>
     public uint AmountEnemiesToSpawn { get; private set; }
+
+    /// <summary>
+    /// An array of enemies to be spawned in the current wave.
+    /// </summary>
     public EnemiesToSpawn[] EnemiesSpawn { get; private set; }
 
-    public void Awake()
-    {
-        WaveNumber = AmountEnemiesToSpawn = 0;
-        DelayBeforeNextWave = DelayBetweenSpawn = 0;
-    }
 
+    /// <summary>
+    /// Updates the values of the current wave with the values of the next wave.
+    /// </summary>
+    /// <param name="currentWaveIndex"> The index of the next wave. </param>
     public void UpdateWaveValues(uint currentWaveIndex)
     {
-        //assigning new values for next wave
-        WaveNumber = waves[currentWaveIndex].waveNumber;
-        EnemiesSpawn = waves[currentWaveIndex].enemies;
+        WaveNumber = _waves[currentWaveIndex].waveNumber;
+        EnemiesSpawn = _waves[currentWaveIndex].enemies;
 
         foreach (EnemiesToSpawn enemies in EnemiesSpawn) AmountEnemiesToSpawn += (uint)enemies.amountToSpawn;
 
-        DelayBetweenSpawn = waves[currentWaveIndex].delayBetweenSpawn;
-        DelayBeforeNextWave = waves[currentWaveIndex].delayBeforeNextWave;
+        DelayBetweenSpawn = _waves[currentWaveIndex].delayBetweenSpawn;
+        DelayBeforeNextWave = _waves[currentWaveIndex].delayBeforeNextWave;
     }
 
+    /// <summary>
+    /// Resets the total amount of enemies that will spawn in the current wave to 0.
+    /// </summary>
     public void ResetEnemiesToSpawn() => AmountEnemiesToSpawn = 0;
+
+    /// <summary>
+    /// Decreases the delay before the next wave by a certain amount.
+    /// </summary>
+    /// <param name="decreaseBy"> The amount to decrease the delay by. </param>
     public void DecreaseDelayNextWave(float decreaseBy) => DelayBeforeNextWave -= decreaseBy;
 }
 

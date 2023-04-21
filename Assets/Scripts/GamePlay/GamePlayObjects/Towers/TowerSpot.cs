@@ -1,19 +1,33 @@
 using UnityEngine;
 
-[RequireComponent(typeof(MeshRenderer),typeof(MeshFilter), typeof(BoxCollider))]
+///<summary>
+/// A class representing an available spot where towers can be placed.
+///</summary>
+[RequireComponent(typeof(MeshRenderer), typeof(MeshFilter), typeof(BoxCollider))]
 public class TowerSpot : MonoBehaviour
 {
-    [SerializeField] GameObject arrowPrefab;
+    ///<summary>
+    /// The arrow prefab that is displayed above a tower spot when it is available for placement.
+    ///</summary>
+    [SerializeField] private GameObject _arrowPrefab;
 
-    private MeshRenderer mesh;
-    private BoxCollider colliderBox;
-
+    ///<summary>
+    /// Gets a value indicating whether the tower spot is currently occupied by a tower.
+    ///</summary>
     public bool Occupied { get; private set; }
+
+    private MeshRenderer _mesh;
+    private BoxCollider _colliderBox;
 
     private void Awake()
     {
-        mesh = GetComponent<MeshRenderer>();   
-        colliderBox = GetComponent<BoxCollider>();
+        GetComponents();
+    }
+
+    private void GetComponents()
+    {
+        _mesh = GetComponent<MeshRenderer>();
+        _colliderBox = GetComponent<BoxCollider>();
     }
 
     private void Start()
@@ -21,23 +35,38 @@ public class TowerSpot : MonoBehaviour
         Occupied = false;
 
         Store.OnPurchasedTower += EnableAvailableMarker;
-        TowerPlacer.OnTowerPlaced2 += DisableAvailableMarker;
+        TowerPlacer.OnTowerDroppedUiChange += DisableAvailableMarker;
     }
 
+    ///<summary>
+    /// Sets the state of the tower spot (i.e. enabled or disabled).
+    ///</summary>
+    ///<param name="state">The state to set the tower spot to.</param>
     private void SetTowerSpotState(bool state)
     {
-        mesh.enabled = state;
-        colliderBox.enabled = state;
+        _mesh.enabled = state;
+        _colliderBox.enabled = state;
     }
 
+    ///<summary>
+    /// Enables the arrow prefab above the tower spot when it is available for placement.
+    ///</summary>
     private void EnableAvailableMarker()
     {
-        if (Occupied) return;
-        arrowPrefab.SetActive(true);
+        if (Occupied || 
+            _arrowPrefab == null) return;
+
+        _arrowPrefab.SetActive(true);
     }
 
-    private void DisableAvailableMarker() => arrowPrefab.SetActive(false);
+    ///<summary>
+    /// Disables the arrow prefab above the tower spot when it is not available for placement.
+    ///</summary>
+    private void DisableAvailableMarker() => _arrowPrefab.SetActive(false);
 
+    ///<summary>
+    /// Marks the tower spot as occupied by a tower.
+    ///</summary>
     public void TowerPlaced()
     {
         if (Occupied) return;
@@ -45,9 +74,13 @@ public class TowerSpot : MonoBehaviour
         SetTowerSpotState(false);
     }
 
+    ///<summary>
+    /// Marks the tower spot as unoccupied by a tower.
+    ///</summary>
     public void TowerLeft()
     {
         Occupied = false;
         SetTowerSpotState(true);
     }
 }
+

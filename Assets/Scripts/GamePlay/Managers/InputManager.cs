@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class InputManager : MonoBehaviour
+/// <summary>
+/// This class keeps track of the user's input.
+/// </summary>
+/// <remarks> Can be expanded to incorporate more complex cases i.e combination of multiple inputs </remarks>
+public class InputManager : Singleton<InputManager>
 {
-
-    public static InputManager Instance { get; private set; }
-
+    /// <summary>
+    /// Gets whether the right click was pressed during the current frame
+    /// </summary>
     public bool ClickedRightMouse { get; private set; }
+
+    /// <summary>
+    /// Gets whether the left click was pressed during the current frame
+    /// </summary>
     public bool ClickedLeftMouse { get; private set; }
 
-    private void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
+    protected override void Awake() => base.Awake();
 
-    // Update is called once per frame
     void Update()
     {
         ClickedLeftMouse = Input.GetMouseButtonDown(0);
